@@ -1,5 +1,11 @@
 let contacts = []
 
+ const addContactForm = document.getElementById("new-contact-form")
+ const nameInput = document.getElementById("name")
+ const phoneInput = document.getElementById("phone")
+ const checkboxInput = document.getElementById("em-checkbox")
+loadContacts()
+
 /**
  * Called when submitting the new Contact Form
  * This method will pull data from the form
@@ -10,13 +16,34 @@ let contacts = []
  * *** push: resources/push.jpg
  */
 function addContact(event) {
+  event.preventDefault()
+  let form = event.target
+
+// let contact = {
+//  name: form.name.value,
+//  phone: form.phone.value,
+//  isEmergencyContact: form.emergency.checked,
+//  contactId: generateId()
+let contact = {
+  name: nameInput.value,
+  phone: phoneInput.value,
+  isEmergencyContact: checkboxInput.checked,
+  contactId: generateId()
 }
+
+  contacts.push(contact)
+  saveContacts()
+  form.reset()
+} 
+
 
 /**
  * Converts the contacts array to a JSON string then
  * Saves the string to localstorage at the key contacts 
  */
 function saveContacts() {
+  window.localStorage.setItem("contactList", JSON.stringify(contacts))
+  drawContacts()
 }
 
 /**
@@ -25,6 +52,10 @@ function saveContacts() {
  * the contacts array to the retrieved array
  */
 function loadContacts() {
+  let contactListData = JSON.parse(window.localStorage.getItem("contactList"))
+  if(contactListData){
+    contacts = contactListData
+}
 }
 
 /**
@@ -33,6 +64,22 @@ function loadContacts() {
  * contacts in the contacts array
  */
 function drawContacts() {
+  let contactListElement = document.getElementById("contact-list")
+  let contactsTemplate = ""
+  contacts.forEach(contact => {
+    contactsTemplate +=`
+    <div class="card mt-1 mb-1 ${contact.isEmergencyContact ? `emergency-contact` : ``}">
+    <h3 class="mt-1 mb-1">${contact.name}</h3>
+    <div class="d-flex space-between">
+      <p>
+      <i class="fa fa-fw fa-phone"></i>
+      <span>${contact.phone}</span>
+      </p>
+      <i class="action fa fa-trash text-danger" onclick="removeContact('${contact.contactId}')"></i>
+    </div>
+  </div>`
+  })
+  contactListElement.innerHTML = contactsTemplate
 }
 
 /**
@@ -45,12 +92,27 @@ function drawContacts() {
  * @param {string} contactId 
  */
 function removeContact(contactId) {
+  let i = contacts.findIndex(contact => contact.contactId == contactId)
+  console.log(contactId)
+  if (i == -1) {
+    console.log(contactId)
+    throw new Error("Invalid Contact Id")
+  }
+  contacts.splice(i, 1)
+  saveContacts()
+
+
 }
 
 /**
  * Toggles the visibility of the AddContact Form
  */
 function toggleAddContactForm() {
+  if (document.getElementById("new-contact-form").classList.contains(`hidden`)) {
+    document.getElementById("new-contact-form").classList.remove("hidden")
+  } else {
+    document.getElementById("new-contact-form").classList.add("hidden")
+  } 
 }
 
 

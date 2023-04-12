@@ -14,9 +14,9 @@
 
 body{
   background-color: var(--bg);
-  font-size: 16pt;
+  font-size: 20pt;
   color: var(--text-color);
-  /* TODO Add font-family from google */
+  font-family: 'Nanum Pen Script', cursive;
 }
 
 p{
@@ -33,7 +33,7 @@ form{
 
 label{
   display: block;
-  font-size: 12pt;
+  font-size: 18pt;
 }
 
 input{
@@ -192,3 +192,6 @@ button:hover{
 .contacts::-webkit-scrollbar {
   width: 0;
 }
+
+
+
